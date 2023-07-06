@@ -4,8 +4,9 @@ from sqlalchemy import Column, Integer,\
         DATETIME,Boolean,DateTime
 from sqlalchemy.sql import func
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import\
-    declarative_base
+#from sqlalchemy.ext.declarative import\
+#    declarative_base
+from sqlalchemy.orm import declarative_base
 from datetime import datetime
 
 DATABASE = 'postgresql'
