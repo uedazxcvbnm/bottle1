@@ -11,7 +11,7 @@ from datetime import datetime
 
 DATABASE = 'postgresql'
 USER     = 'book_user'
-PASSWORD = '<!--設定したパスワード-->'
+PASSWORD = '<!--DBに設定したパスワード-->'
 HOST     = 'localhost'
 PORT     = '5432'
 DB_NAME  = 'book_data'
