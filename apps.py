@@ -1,4 +1,3 @@
-from email.mime import application
 import bottle
 #各パスルーティング
 import routes

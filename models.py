@@ -1,4 +1,3 @@
-from typing_extensions import Self
 from sqlalchemy import Column, Integer,\
     String, Text, text, create_engine,\
         DATETIME,Boolean,DateTime

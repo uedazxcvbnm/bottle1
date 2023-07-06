@@ -20,7 +20,8 @@ def get_connection():
     DBの接続を行う
     '''
     dsn = 'host={host} port={port} dbname={dbname} user={user} password={password}'
-    dsn = dsn.format(user=DB_USER, password=DB_PASS, host=DB_HOST, port=DB_PORT, dbname=DB_NAME)
+    dsn = dsn.format(user=DB_USER, password=DB_PASS,\
+        host=DB_HOST, port=DB_PORT, dbname=DB_NAME)
     return psycopg2.connect(dsn)
 
 #Bottleアプリ利用
@@ -28,8 +29,9 @@ app = Bottle()
 @app.route('/', method=['GET', 'POST'])
 def index():
     '''Hello Worldの実装
+    実装ポイント(1)
     '''
-    return "Hello World"
+    pass
 
 @app.route('/add', method=['GET', 'POST'])
 def add():
@@ -71,11 +73,14 @@ def add():
     """
     #GETでアクセスされたら
     if request.method == "GET" or request.forms.get('next') == 'back':
-        return form_html.replace('<!--user_id-->', '').\
-        replace('<!--passwd-->', '').\
-        replace('<!--email-->', '').\
-        replace('<!--user_shi-->', '').\
-        replace('<!--user_mei-->', '')
+        """
+        実装ポイント(2)
+        form_html変数内の
+        <!--user_id-->、<!--passwd-->
+        <!--email-->、<!--user_shi-->
+        <!--user_mei-->の値を''からにして
+        return する
+        """
     else:
         #postされたフォームの値を取得する
         form = {}
@@ -94,11 +99,14 @@ def add():
 
         #受け取った値を置換する
         #メソッドは重ね掛けできる
-        return html.replace('<!--user_id-->', form['user_id']).\
-        replace('<!--passwd-->', form['passwd']).\
-        replace('<!--email-->', form['email']).\
-        replace('<!--user_shi-->', form['user_shi']).\
-        replace('<!--user_mei-->', form['user_mei'])
+        '''
+        実装ポイント(3)
+        html変数を
+        <!--user_id-->、<!--passwd-->、<!--email-->
+        <!--user_shi-->、<!--user_mei-->に
+        form変数のそれぞれのキーで置換して
+        returnする
+        '''
 
 @app.route('/regist', method=["POST"])
 def regist():
@@ -122,13 +130,18 @@ def regist():
         values \
         (%(user_id)s, %(passwd)s, %(email)s, %(user_shi)s, %(user_mei)s, false);"""
         #入力する値の辞書を設定する
-        val = {'user_id':user_id, 'passwd':passwd,\
-            'email':email, 'user_shi':user_shi,\
-            'user_mei':user_mei}
+        '''実装ポイント(4)
+        下記のvalの辞書に
+        user_id,passwd,email,user_shi,user_mei
+        をキーにしたフォームから取得した値を入れる
+        何故、こんな実装をしているか？考えてみる
+        '''
+        val = {}
+
         with get_connection() as con:#DBの接続を取得
             with con.cursor() as cur:#カーソルを取得
                 cur.execute(sql, val)
-            con.commit()
+            con.commit()#DBコミット
         redirect('/add')
 
 @app.route('/list')
@@ -144,7 +157,13 @@ def list():
             rows = cur.fetchall()
             #下記の内包表記を挟む必要がある
             rows = [dict(row) for row in rows]
-    return template('list.html', rows=rows)
+    '''実装ポイント(5)
+    template関数に'list.html', rows=rows
+    という引数を指定して
+    return する
+    list.htmlはviewsディレクトリ内のファイルを読む
+    何が楽になるか？考えてみよう
+    '''
 
 if __name__ == '__main__':
     run(app=app, host='0.0.0.0', port=8888, reloader=True, debug=True)
