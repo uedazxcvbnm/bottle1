@@ -1,3 +1,7 @@
+'''
+セッションを作る機能も担う
+静的コンテンツを扱うパスルーティング
+'''
 from bottle import Bottle,\
     jinja2_template as template,\
         static_file, request, redirect
@@ -7,6 +11,7 @@ from utils.util import Utils
 from utils.session import Session
 from utils.auth import Auth
 
+#セッションを作る
 app = Bottle()
 sess = Session()
 app_sess = sess.create_session(app)

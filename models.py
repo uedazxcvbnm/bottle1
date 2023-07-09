@@ -15,15 +15,24 @@ HOST     = 'localhost'
 PORT     = '5432'
 DB_NAME  = 'book_data'
 
+#DB接続情報を指定する
 URL = '{}://{}:{}@{}:{}/{}'.format(DATABASE,\
     USER, PASSWORD, HOST, PORT, DB_NAME)
+#ORMのエンジンを作る
 engin = create_engine(URL, echo=True)
-
+#ORMのベースを取得する
 Base = declarative_base()
+#DBのセッションを作る
 Connection = sessionmaker(bind=engin)
+#DBのコネクションを作る
 connection = Connection()
 
+#各テーブルのモデルクラスを作る
+#Baseを継承する
 class Books(Base):
+    '''
+    booksテーブルのモデル
+    '''
     __tablename__ = "books"
     id_ = Column('id', Integer, primary_key = True)
     name = Column('name', String(255))
@@ -36,6 +45,9 @@ class Books(Base):
     delFlg = Column('del', Boolean)
 
 class BookUser(Base):
+    '''
+    book_userテーブルのモデル
+    '''
     __tablename__ = "book_user"
     user_id = Column('user_id', String(255), primary_key = True)
     passwd = Column('passwd', String(255), nullable=False)
@@ -45,4 +57,5 @@ class BookUser(Base):
     delFlg = Column('del', Boolean)
 
 if __name__ == "__main__":
+    #マイグレーションを実行する
     Base.metadata.create_all(engin)
