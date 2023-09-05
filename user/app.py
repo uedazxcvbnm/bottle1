@@ -26,13 +26,16 @@ def get_connection():
 
 #Bottleアプリ利用
 app = Bottle()
+
+# どのURLでどのメソッドが動くかを定義
 @app.route('/', method=['GET', 'POST'])
 def index():
     '''Hello Worldの実装
     実装ポイント(1)
     '''
-    pass
+    return 'Hello World'
 
+# このURLでadd関数が動く
 @app.route('/add', method=['GET', 'POST'])
 def add():
     #ユーザー登録フォームのHTML
@@ -40,11 +43,11 @@ def add():
     <head>登録フォーム</head>
     <body>
     <form action="/add" method="post">
-    ユーザーID:<input type="text" name="user_id" value="<!--user_id-->" /><br />
-    パスワード:<input type="text" name="passwd" value="<!--passwd-->" /><br />
-    email:<input type="text" name="email" value="<!--email-->" /><br />
-    氏:<input type="text" name="user_shi" value="<!--user_shi-->" /><br />
-    名:<input type="text" name="user_mei" value="<!--user_mei-->" /><br />
+    ユーザーID:<input type="text" name="user_id" value="user_id" /><br />
+    パスワード:<input type="text" name="passwd" value="passwd" /><br />
+    email:<input type="text" name="email" value="email" /><br />
+    氏:<input type="text" name="user_shi" value="user_shi" /><br />
+    名:<input type="text" name="user_mei" value="user_mei" /><br />
     <input type="submit" value="確認" name="next"/>
     </form>
     </body>
@@ -55,16 +58,16 @@ def add():
     <head>確認</head>
     <body>
     <form action="/regist" method="post">
-    ユーザーID:<!--user_id--><br />
-    パスワード:<!--passwd--><br />
-    email:<!--email--><br />
-    氏:<!--user_shi--><br />
-    名:<!--user_mei--><br />
-    <input type="hidden" name="user_id" value="<!--user_id-->" />
-    <input type="hidden" name="passwd" value="<!--passwd-->" />
-    <input type="hidden" name="email" value="<!--email-->" />
-    <input type="hidden" name="user_shi" value="<!--user_shi-->" />
-    <input type="hidden" name="user_mei" value="<!--user_mei-->" />
+    ユーザーID:'user_id'<br />
+    パスワード:'passwd'<br />
+    email:'email'<br />
+    氏:'user_shi'<br />
+    名:'user_mei'<br />
+    <input type="hidden" name="user_id" value="form['user_id']" />
+    <input type="hidden" name="passwd" value="form['passwd']" />
+    <input type="hidden" name="email" value="form['email']" />
+    <input type="hidden" name="user_shi" value="form['user_shi']" />
+    <input type="hidden" name="user_mei" value="form['user_mei']" />
     <input type="submit" value="back" name="next"/>&nbsp;&nbsp;
     <input type="submit" value="regist" name="next"/>
     </form>
@@ -81,8 +84,10 @@ def add():
         <!--user_mei-->の値を''からにして
         return する
         """
+        return form_html
     else:
         #postされたフォームの値を取得する
+        # 辞書に追加
         form = {}
         form['user_id'] = request.forms.decode().get('user_id')
         form['passwd']  = request.forms.decode().get('passwd')
@@ -129,6 +134,7 @@ def regist():
         (user_id, passwd, email, user_shi, user_mei, del) \
         values \
         (%(user_id)s, %(passwd)s, %(email)s, %(user_shi)s, %(user_mei)s, false);"""
+        
         #入力する値の辞書を設定する
         '''実装ポイント(4)
         下記のvalの辞書に
@@ -144,6 +150,7 @@ def regist():
             con.commit()#DBコミット
         redirect('/add')
 
+# @ デコレーター
 @app.route('/list')
 def list():
     sql = """select user_id, email, user_shi,\
@@ -157,6 +164,7 @@ def list():
             rows = cur.fetchall()
             #下記の内包表記を挟む必要がある
             rows = [dict(row) for row in rows]
+    return template('list.html', rows=rows)
     '''実装ポイント(5)
     template関数に'list.html', rows=rows
     という引数を指定して
@@ -166,4 +174,4 @@ def list():
     '''
 
 if __name__ == '__main__':
-    run(app=app, host='0.0.0.0', port=8888, reloader=True, debug=True)
+    run(app=app, host='0.0.0.0', port=8889, reloader=True, debug=True)

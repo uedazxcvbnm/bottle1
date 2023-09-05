@@ -10,7 +10,7 @@ from datetime import datetime
 
 DATABASE = 'postgresql'
 USER     = 'book_user'
-PASSWORD = '<!--DBに設定したパスワード-->'
+PASSWORD = '5Ms02fkCrr'
 HOST     = 'localhost'
 PORT     = '5432'
 DB_NAME  = 'book_data'
